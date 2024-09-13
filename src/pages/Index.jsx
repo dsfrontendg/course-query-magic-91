@@ -17,7 +17,9 @@ const Index = () => {
   const { toast } = useToast();
 
   const handleSearchSubmit = async (params) => {
+    console.log('Index: handleSearchSubmit called with params', params);
     if (!params.token) {
+      console.log('Index: Token is missing');
       toast({
         title: "错误",
         description: "Token 是必填项",
@@ -31,11 +33,14 @@ const Index = () => {
     sessionStorage.setItem('searchParams', JSON.stringify(params));
     
     try {
+      console.log('Index: Fetching course data');
       const response = await fetchCourseData(params);
+      console.log('Index: Fetch response', response);
       if (response && response.length > 0) {
         setShowSearch(false);
         setShowResults(true);
       } else {
+        console.log('Index: No matching courses found');
         toast({
           title: "提示",
           description: "没有找到匹配的课程",
@@ -43,9 +48,10 @@ const Index = () => {
         });
       }
     } catch (error) {
-      console.error('Search error:', error);
+      console.error('Index: Search error:', error);
       let errorMessage = "搜索过程中发生错误，请重试";
       if (error.response) {
+        console.log('Index: Error response', error.response);
         if (error.response.status === 403) {
           errorMessage = "访问被拒绝，请检查您的 Token 是否正确";
         } else if (error.response.status === 429) {
@@ -54,8 +60,10 @@ const Index = () => {
           errorMessage = error.response.data?.message || "未知错误，请重试";
         }
       } else if (error.request) {
+        console.log('Index: No response received');
         errorMessage = "无法连接到服务器，请检查您的网络连接";
       }
+      console.log('Index: Showing error toast', errorMessage);
       toast({
         title: "错误",
         description: errorMessage,
@@ -67,6 +75,7 @@ const Index = () => {
   };
 
   const toggleSearch = () => {
+    console.log('Index: Toggling search');
     if (!showSearch) {
       const savedParams = sessionStorage.getItem('searchParams');
       if (savedParams) {

@@ -21,14 +21,18 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
     enabled: showResults,
     retry: false,
     onError: (error) => {
+      console.log('CourseSearch: Error in useQuery', error);
       if (error.response) {
+        console.log('CourseSearch: Error response', error.response);
         if (error.response.status === 429) {
+          console.log('CourseSearch: Rate limit error');
           toast({
             title: "错误",
             description: "请求过多，请稍后再试",
             variant: "destructive",
           });
         } else {
+          console.log('CourseSearch: Other API error');
           toast({
             title: "错误",
             description: error.response.data.message || "发生未知错误",
@@ -36,6 +40,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
           });
         }
       } else {
+        console.log('CourseSearch: Network error');
         toast({
           title: "错误",
           description: "无法连接到服务器",
@@ -52,6 +57,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!searchParams.token) {
+      console.log('CourseSearch: Token is missing');
       toast({
         title: "错误",
         description: "Token 是必填项",
@@ -60,8 +66,10 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
       return;
     }
     if (onSubmit) {
+      console.log('CourseSearch: Submitting search', searchParams);
       onSubmit(searchParams);
     } else {
+      console.log('CourseSearch: Refetching data');
       refetch();
     }
   };
