@@ -76,5 +76,5 @@
 }
 
 .ant-message-notice-content {
-  @apply bg-gray-800 text-white;
+  @apply bg-gray-800 text-black;
 }
