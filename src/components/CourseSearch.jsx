@@ -56,6 +56,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('CourseSearch: handleSubmit called');
     if (!searchParams.token) {
       console.log('CourseSearch: Token is missing');
       toast({
@@ -66,13 +67,15 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
       return;
     }
     if (onSubmit) {
-      console.log('CourseSearch: Submitting search', searchParams);
+      console.log('CourseSearch: Calling onSubmit with params', searchParams);
       onSubmit(searchParams);
     } else {
       console.log('CourseSearch: Refetching data');
       refetch();
     }
   };
+
+  console.log('CourseSearch: Rendering with showResults', showResults);
 
   if (!showResults) {
     return (
@@ -129,6 +132,8 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
       </form>
     );
   }
+
+  console.log('CourseSearch: Rendering results', { isQueryLoading, error, data });
 
   return (
     <div>
