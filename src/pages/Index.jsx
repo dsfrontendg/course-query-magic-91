@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { message } from 'antd';
 import CourseSearch from '@/components/CourseSearch';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import { fetchCourseData } from '@/lib/api';
-import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [showSearch, setShowSearch] = useState(true);
@@ -14,13 +14,12 @@ const Index = () => {
     const savedToken = localStorage.getItem('token');
     return { name: '', teacher: '', org: '', token: savedToken || '' };
   });
-  const { toast } = useToast();
 
   const handleSearchSubmit = async (params) => {
     console.log('Index: handleSearchSubmit called with params', params);
     if (!params.token) {
       console.log('Index: Token is missing');
-      toast({ description: "错误: Token 是必填项", variant: "destructive" });
+      message.error("错误: Token 是必填项");
       return;
     }
     setIsLoading(true);
@@ -37,7 +36,7 @@ const Index = () => {
         setShowResults(true);
       } else {
         console.log('Index: No matching courses found');
-        toast({ description: "没有找到匹配的课程", variant: "destructive" });
+        message.error("没有找到匹配的课程");
       }
     } catch (error) {
       console.error('Index: Search error:', error);
@@ -53,8 +52,8 @@ const Index = () => {
         console.log('Index: No response received');
         errorMessage = "网络连接失败";
       }
-      console.log('Index: Showing error toast', errorMessage);
-      toast({ description: errorMessage, variant: "destructive" });
+      console.log('Index: Showing error message', errorMessage);
+      message.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

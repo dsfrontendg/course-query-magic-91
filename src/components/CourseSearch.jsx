@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { message } from 'antd';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExternalLink, Loader2 } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
-import { useToast } from "@/components/ui/use-toast";
 
 const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoading = false }) => {
   const [searchParams, setSearchParams] = useState(initialParams);
-  const { toast } = useToast();
 
   useEffect(() => {
     setSearchParams(initialParams);
@@ -35,7 +34,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
         console.log('CourseSearch: Network error');
         errorMessage = "网络连接失败";
       }
-      toast({ description: errorMessage, variant: "destructive" });
+      message.error(errorMessage);
     },
   });
 
@@ -48,7 +47,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
     console.log('CourseSearch: handleSubmit called');
     if (!searchParams.token) {
       console.log('CourseSearch: Token is missing');
-      toast({ description: "错误: Token 是必填项", variant: "destructive" });
+      message.error("错误: Token 是必填项");
       return;
     }
     if (onSubmit) {
