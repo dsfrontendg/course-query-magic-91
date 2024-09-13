@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,14 +7,18 @@ import { ExternalLink } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
 import { useToast } from "@/components/ui/use-toast";
 
-const CourseSearch = ({ onSubmit, showResults = false }) => {
-  const [searchParams, setSearchParams] = useState({ name: '', teacher: '', org: '', token: '' });
+const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => {
+  const [searchParams, setSearchParams] = useState(initialParams);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setSearchParams(initialParams);
+  }, [initialParams]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['courseData', searchParams],
     queryFn: () => fetchCourseData(searchParams),
-    enabled: false,
+    enabled: showResults,
     retry: false,
     onError: (error) => {
       if (error.response) {
@@ -47,8 +51,11 @@ const CourseSearch = ({ onSubmit, showResults = false }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    refetch();
-    if (onSubmit) onSubmit();
+    if (onSubmit) {
+      onSubmit(searchParams);
+    } else {
+      refetch();
+    }
   };
 
   if (!showResults) {
