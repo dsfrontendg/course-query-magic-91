@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const fetchCourseData = async ({ name, teacher, org, token }) => {
   try {
-    const response = await axios.get('https://vod.ntshu.me/api/', {
+    const response = await axios.get('https://api.vod.ntshu.me/api/', {
       params: {
         name,
         teacher,
