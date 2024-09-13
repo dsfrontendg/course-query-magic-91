@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExternalLink, Loader2 } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/components/ui/use-toast";
 
 const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoading = false }) => {
   const [searchParams, setSearchParams] = useState(initialParams);
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '' });
+  const { toast } = useToast();
 
   useEffect(() => {
     setSearchParams(initialParams);
@@ -22,19 +22,20 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
     retry: false,
     onError: (error) => {
       console.log('CourseSearch: Error in useQuery', error);
+      let errorMessage = "搜索失败，请重试";
       if (error.response) {
         console.log('CourseSearch: Error response', error.response);
         if (error.response.status === 429) {
           console.log('CourseSearch: Rate limit error');
-          setAlertInfo({ show: true, message: "错误: 请求过多，请稍后再试" });
-        } else {
-          console.log('CourseSearch: Other API error');
-          setAlertInfo({ show: true, message: "错误: " + (error.response.data.message || "发生未知错误") });
+          errorMessage = "请求过于频繁";
+        } else if (error.response.status === 403) {
+          errorMessage = "Token 无效";
         }
       } else {
         console.log('CourseSearch: Network error');
-        setAlertInfo({ show: true, message: "错误: 无法连接到服务器" });
+        errorMessage = "网络连接失败";
       }
+      toast({ description: errorMessage, variant: "destructive" });
     },
   });
 
@@ -47,7 +48,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
     console.log('CourseSearch: handleSubmit called');
     if (!searchParams.token) {
       console.log('CourseSearch: Token is missing');
-      setAlertInfo({ show: true, message: "错误: Token 是必填项" });
+      toast({ description: "错误: Token 是必填项", variant: "destructive" });
       return;
     }
     if (onSubmit) {
@@ -63,12 +64,6 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
 
   return (
     <div>
-      {alertInfo.show && (
-        <Alert className="mb-4 bg-red-500 text-white">
-          <AlertDescription>{alertInfo.message}</AlertDescription>
-        </Alert>
-      )}
-
       {!showResults && (
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -128,11 +123,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
           {isQueryLoading && <p className="text-gray-300 mt-4 text-center">加载中...</p>}
           
           {!isQueryLoading && error && (
-            <Alert className="mt-4 bg-red-500 text-white">
-              <AlertDescription>
-                {error.response?.data?.message || "发生错误，请重试"}
-              </AlertDescription>
-            </Alert>
+            <p className="text-red-500 mt-4 text-center">搜索失败，请重试</p>
           )}
           
           {!isQueryLoading && !error && data && (

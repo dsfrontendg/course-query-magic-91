@@ -4,23 +4,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import { fetchCourseData } from '@/lib/api';
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [showSearch, setShowSearch] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [alertInfo, setAlertInfo] = useState({ show: false, message: '' });
   const [searchParams, setSearchParams] = useState(() => {
     const savedToken = localStorage.getItem('token');
     return { name: '', teacher: '', org: '', token: savedToken || '' };
   });
+  const { toast } = useToast();
 
   const handleSearchSubmit = async (params) => {
     console.log('Index: handleSearchSubmit called with params', params);
     if (!params.token) {
       console.log('Index: Token is missing');
-      setAlertInfo({ show: true, message: "错误: Token 是必填项" });
+      toast({ description: "错误: Token 是必填项", variant: "destructive" });
       return;
     }
     setIsLoading(true);
@@ -37,26 +37,24 @@ const Index = () => {
         setShowResults(true);
       } else {
         console.log('Index: No matching courses found');
-        setAlertInfo({ show: true, message: "提示: 没有找到匹配的课程" });
+        toast({ description: "没有找到匹配的课程", variant: "destructive" });
       }
     } catch (error) {
       console.error('Index: Search error:', error);
-      let errorMessage = "搜索过程中发生错误，请重试";
+      let errorMessage = "搜索失败，请重试";
       if (error.response) {
         console.log('Index: Error response', error.response);
         if (error.response.status === 403) {
-          errorMessage = "访问被拒绝，请检查您的 Token 是否正确";
+          errorMessage = "Token 无效";
         } else if (error.response.status === 429) {
-          errorMessage = "请求过于频繁，请稍后再试";
-        } else {
-          errorMessage = error.response.data?.message || "未知错误，请重试";
+          errorMessage = "请求过于频繁";
         }
       } else if (error.request) {
         console.log('Index: No response received');
-        errorMessage = "无法连接到服务器，请检查您的网络连接";
+        errorMessage = "网络连接失败";
       }
-      console.log('Index: Showing error alert', errorMessage);
-      setAlertInfo({ show: true, message: errorMessage });
+      console.log('Index: Showing error toast', errorMessage);
+      toast({ description: errorMessage, variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -76,12 +74,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center p-4 relative">
-      {alertInfo.show && (
-        <Alert className="absolute top-4 left-4 right-4 bg-red-500 text-white">
-          <AlertDescription>{alertInfo.message}</AlertDescription>
-        </Alert>
-      )}
-      
       {showSearch && (
         <Card className="w-full max-w-md shadow-lg bg-gray-800/50 backdrop-blur-lg border border-gray-700">
           <CardContent className="p-6">
