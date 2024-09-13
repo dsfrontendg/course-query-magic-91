@@ -5,11 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExternalLink, Loader2 } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
-import { useToast } from "@/components/ui/use-toast";
 
 const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoading = false }) => {
   const [searchParams, setSearchParams] = useState(initialParams);
-  const { toast } = useToast();
 
   useEffect(() => {
     setSearchParams(initialParams);
@@ -26,26 +24,14 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
         console.log('CourseSearch: Error response', error.response);
         if (error.response.status === 429) {
           console.log('CourseSearch: Rate limit error');
-          toast({
-            title: "错误",
-            description: "请求过多，请稍后再试",
-            variant: "destructive",
-          });
+          alert("错误: 请求过多，请稍后再试");
         } else {
           console.log('CourseSearch: Other API error');
-          toast({
-            title: "错误",
-            description: error.response.data.message || "发生未知错误",
-            variant: "destructive",
-          });
+          alert("错误: " + (error.response.data.message || "发生未知错误"));
         }
       } else {
         console.log('CourseSearch: Network error');
-        toast({
-          title: "错误",
-          description: "无法连接到服务器",
-          variant: "destructive",
-        });
+        alert("错误: 无法连接到服务器");
       }
     },
   });
@@ -59,11 +45,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
     console.log('CourseSearch: handleSubmit called');
     if (!searchParams.token) {
       console.log('CourseSearch: Token is missing');
-      toast({
-        title: "错误",
-        description: "Token 是必填项",
-        variant: "destructive",
-      });
+      alert("错误: Token 是必填项");
       return;
     }
     if (onSubmit) {

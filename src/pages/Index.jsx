@@ -3,7 +3,6 @@ import CourseSearch from '@/components/CourseSearch';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 import { fetchCourseData } from '@/lib/api';
 
 const Index = () => {
@@ -14,17 +13,12 @@ const Index = () => {
     const savedToken = localStorage.getItem('token');
     return { name: '', teacher: '', org: '', token: savedToken || '' };
   });
-  const { toast } = useToast();
 
   const handleSearchSubmit = async (params) => {
     console.log('Index: handleSearchSubmit called with params', params);
     if (!params.token) {
       console.log('Index: Token is missing');
-      toast({
-        title: "错误",
-        description: "Token 是必填项",
-        variant: "destructive",
-      });
+      alert("错误: Token 是必填项");
       return;
     }
     setIsLoading(true);
@@ -41,11 +35,7 @@ const Index = () => {
         setShowResults(true);
       } else {
         console.log('Index: No matching courses found');
-        toast({
-          title: "提示",
-          description: "没有找到匹配的课程",
-          variant: "default",
-        });
+        alert("提示: 没有找到匹配的课程");
       }
     } catch (error) {
       console.error('Index: Search error:', error);
@@ -63,12 +53,8 @@ const Index = () => {
         console.log('Index: No response received');
         errorMessage = "无法连接到服务器，请检查您的网络连接";
       }
-      console.log('Index: Showing error toast', errorMessage);
-      toast({
-        title: "错误",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      console.log('Index: Showing error alert', errorMessage);
+      alert("错误: " + errorMessage);
     } finally {
       setIsLoading(false);
     }
