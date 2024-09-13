@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Loader2 } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
 import { useToast } from "@/components/ui/use-toast";
 
-const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => {
+const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoading = false }) => {
   const [searchParams, setSearchParams] = useState(initialParams);
   const { toast } = useToast();
 
@@ -15,7 +15,7 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => 
     setSearchParams(initialParams);
   }, [initialParams]);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading: isQueryLoading, error, refetch } = useQuery({
     queryKey: ['courseData', searchParams],
     queryFn: () => fetchCourseData(searchParams),
     enabled: showResults,
@@ -103,8 +103,19 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => 
           required
         />
         <div className="flex justify-center">
-          <Button type="submit" className="bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-300">
-            搜索
+          <Button 
+            type="submit" 
+            className="bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-300"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                搜索中...
+              </>
+            ) : (
+              '搜索'
+            )}
           </Button>
         </div>
       </form>
@@ -113,15 +124,15 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => 
 
   return (
     <div>
-      {isLoading && <p className="text-gray-300 mt-4 text-center">加载中...</p>}
+      {isQueryLoading && <p className="text-gray-300 mt-4 text-center">加载中...</p>}
       
-      {!isLoading && error && (
+      {!isQueryLoading && error && (
         <p className="text-red-500 mt-4 text-center">
           {error.response?.data?.message || "发生错误，请重试"}
         </p>
       )}
       
-      {!isLoading && !error && data && (
+      {!isQueryLoading && !error && data && (
         <div className="mt-4 bg-gray-800/50 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
           <Table>
             <TableHeader>
