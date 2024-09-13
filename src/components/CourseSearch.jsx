@@ -61,7 +61,7 @@ const CourseSearch = () => {
           placeholder="课程名称"
           value={searchParams.name}
           onChange={handleInputChange}
-          className="bg-white/30 backdrop-blur-lg border-white/50 text-gray-800 placeholder-gray-600"
+          className="bg-gray-700/50 backdrop-blur-lg border-gray-600 text-white placeholder-gray-400"
         />
         <Input
           type="text"
@@ -69,7 +69,7 @@ const CourseSearch = () => {
           placeholder="教师姓名"
           value={searchParams.teacher}
           onChange={handleInputChange}
-          className="bg-white/30 backdrop-blur-lg border-white/50 text-gray-800 placeholder-gray-600"
+          className="bg-gray-700/50 backdrop-blur-lg border-gray-600 text-white placeholder-gray-400"
         />
         <Input
           type="text"
@@ -77,7 +77,7 @@ const CourseSearch = () => {
           placeholder="学院"
           value={searchParams.org}
           onChange={handleInputChange}
-          className="bg-white/30 backdrop-blur-lg border-white/50 text-gray-800 placeholder-gray-600"
+          className="bg-gray-700/50 backdrop-blur-lg border-gray-600 text-white placeholder-gray-400"
         />
         <Input
           type="password"
@@ -85,7 +85,7 @@ const CourseSearch = () => {
           placeholder="Token"
           value={searchParams.token}
           onChange={handleInputChange}
-          className="bg-white/30 backdrop-blur-lg border-white/50 text-gray-800 placeholder-gray-600"
+          className="bg-gray-700/50 backdrop-blur-lg border-gray-600 text-white placeholder-gray-400"
         />
         <div className="flex justify-center">
           <Button type="submit" className="bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-300">
@@ -94,37 +94,37 @@ const CourseSearch = () => {
         </div>
       </form>
 
-      {isLoading && <p className="text-gray-800 mt-4 text-center">加载中...</p>}
+      {isLoading && <p className="text-gray-300 mt-4 text-center">加载中...</p>}
       
       {isSearchTriggered && !isLoading && !error && data && (
-        <div className="mt-8 bg-white/20 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
+        <div className="mt-8 bg-gray-800/50 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-gray-800">课程名称</TableHead>
-                <TableHead className="text-gray-800">教师姓名</TableHead>
-                <TableHead className="text-gray-800">学院</TableHead>
-                <TableHead className="text-gray-800">学年学期</TableHead>
-                <TableHead className="text-gray-800">课程节次</TableHead>
-                <TableHead className="text-gray-800">链接</TableHead>
+                <TableHead className="text-gray-300">课程名称</TableHead>
+                <TableHead className="text-gray-300">教师姓名</TableHead>
+                <TableHead className="text-gray-300">学院</TableHead>
+                <TableHead className="text-gray-300">学年学期</TableHead>
+                <TableHead className="text-gray-300">课程节次</TableHead>
+                <TableHead className="text-gray-300">链接</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((course, index) => (
-                <TableRow key={index} className="hover:bg-white/30 transition-colors duration-200">
-                  <TableCell className="text-gray-800">{course.course_name}</TableCell>
-                  <TableCell className="text-gray-800">{course.tec_name}</TableCell>
-                  <TableCell className="text-gray-800">{course.organ_name}</TableCell>
-                  <TableCell className="text-gray-800">{course.year_term}</TableCell>
-                  <TableCell className="text-gray-800">{course.leti_name}</TableCell>
-                  <TableCell className="text-gray-800">
+                <TableRow key={index} className="hover:bg-gray-700/50 transition-colors duration-200">
+                  <TableCell className="text-gray-300">{course.course_name}</TableCell>
+                  <TableCell className="text-gray-300">{course.tec_name}</TableCell>
+                  <TableCell className="text-gray-300">{course.organ_name}</TableCell>
+                  <TableCell className="text-gray-300">{course.year_term}</TableCell>
+                  <TableCell className="text-gray-300">{course.leti_name}</TableCell>
+                  <TableCell className="text-gray-300">
                     {course.url1 !== 'N/A' && (
-                      <a href={course.url1} target="_blank" rel="noopener noreferrer" className="mr-2 text-purple-600 hover:text-purple-800">
+                      <a href={course.url1} target="_blank" rel="noopener noreferrer" className="mr-2 text-purple-400 hover:text-purple-300">
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     )}
                     {course.url2 !== 'N/A' && (
-                      <a href={course.url2} target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:text-purple-800">
+                      <a href={course.url2} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300">
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     )}
