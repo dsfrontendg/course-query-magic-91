@@ -43,6 +43,7 @@ const Index = () => {
         });
       }
     } catch (error) {
+      console.error('Search error:', error);
       toast({
         title: "错误",
         description: error.response?.data?.message || "搜索过程中发生错误，请重试",
