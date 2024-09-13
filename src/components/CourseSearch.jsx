@@ -7,9 +7,8 @@ import { ExternalLink } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
 import { useToast } from "@/components/ui/use-toast";
 
-const CourseSearch = () => {
+const CourseSearch = ({ onSubmit, showResults = false }) => {
   const [searchParams, setSearchParams] = useState({ name: '', teacher: '', org: '', token: '' });
-  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
   const { toast } = useToast();
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -48,12 +47,12 @@ const CourseSearch = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSearchTriggered(true);
     refetch();
+    if (onSubmit) onSubmit();
   };
 
-  return (
-    <div>
+  if (!showResults) {
+    return (
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           type="text"
@@ -93,11 +92,15 @@ const CourseSearch = () => {
           </Button>
         </div>
       </form>
+    );
+  }
 
+  return (
+    <div>
       {isLoading && <p className="text-gray-300 mt-4 text-center">加载中...</p>}
       
-      {isSearchTriggered && !isLoading && !error && data && (
-        <div className="mt-8 bg-gray-800/50 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
+      {!isLoading && !error && data && (
+        <div className="mt-4 bg-gray-800/50 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
