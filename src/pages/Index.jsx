@@ -4,11 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import { fetchCourseData } from '@/lib/api';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Index = () => {
   const [showSearch, setShowSearch] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [alertInfo, setAlertInfo] = useState({ show: false, message: '' });
   const [searchParams, setSearchParams] = useState(() => {
     const savedToken = localStorage.getItem('token');
     return { name: '', teacher: '', org: '', token: savedToken || '' };
@@ -18,7 +20,7 @@ const Index = () => {
     console.log('Index: handleSearchSubmit called with params', params);
     if (!params.token) {
       console.log('Index: Token is missing');
-      alert("错误: Token 是必填项");
+      setAlertInfo({ show: true, message: "错误: Token 是必填项" });
       return;
     }
     setIsLoading(true);
@@ -35,7 +37,7 @@ const Index = () => {
         setShowResults(true);
       } else {
         console.log('Index: No matching courses found');
-        alert("提示: 没有找到匹配的课程");
+        setAlertInfo({ show: true, message: "提示: 没有找到匹配的课程" });
       }
     } catch (error) {
       console.error('Index: Search error:', error);
@@ -54,7 +56,7 @@ const Index = () => {
         errorMessage = "无法连接到服务器，请检查您的网络连接";
       }
       console.log('Index: Showing error alert', errorMessage);
-      alert("错误: " + errorMessage);
+      setAlertInfo({ show: true, message: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -74,6 +76,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 via-purple-900 to-violet-900 flex items-center justify-center p-4 relative">
+      {alertInfo.show && (
+        <Alert className="absolute top-4 left-4 right-4 bg-red-500 text-white">
+          <AlertDescription>{alertInfo.message}</AlertDescription>
+        </Alert>
+      )}
+      
       {showSearch && (
         <Card className="w-full max-w-md shadow-lg bg-gray-800/50 backdrop-blur-lg border border-gray-700">
           <CardContent className="p-6">
