@@ -44,9 +44,21 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Search error:', error);
+      let errorMessage = "搜索过程中发生错误，请重试";
+      if (error.response) {
+        if (error.response.status === 403) {
+          errorMessage = "访问被拒绝，请检查您的 Token 是否正确";
+        } else if (error.response.status === 429) {
+          errorMessage = "请求过于频繁，请稍后再试";
+        } else {
+          errorMessage = error.response.data?.message || "未知错误，请重试";
+        }
+      } else if (error.request) {
+        errorMessage = "无法连接到服务器，请检查您的网络连接";
+      }
       toast({
         title: "错误",
-        description: error.response?.data?.message || "搜索过程中发生错误，请重试",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
