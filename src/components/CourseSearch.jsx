@@ -53,14 +53,15 @@ const CourseSearch = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <form onSubmit={handleSubmit} className="mb-8 space-y-4">
+    <div>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           type="text"
           name="name"
           placeholder="课程名称"
           value={searchParams.name}
           onChange={handleInputChange}
+          className="bg-white/20 backdrop-blur-lg border-white/30 text-white placeholder-white/70"
         />
         <Input
           type="text"
@@ -68,6 +69,7 @@ const CourseSearch = () => {
           placeholder="教师姓名"
           value={searchParams.teacher}
           onChange={handleInputChange}
+          className="bg-white/20 backdrop-blur-lg border-white/30 text-white placeholder-white/70"
         />
         <Input
           type="text"
@@ -75,6 +77,7 @@ const CourseSearch = () => {
           placeholder="学院"
           value={searchParams.org}
           onChange={handleInputChange}
+          className="bg-white/20 backdrop-blur-lg border-white/30 text-white placeholder-white/70"
         />
         <Input
           type="password"
@@ -82,48 +85,55 @@ const CourseSearch = () => {
           placeholder="Token"
           value={searchParams.token}
           onChange={handleInputChange}
+          className="bg-white/20 backdrop-blur-lg border-white/30 text-white placeholder-white/70"
         />
-        <Button type="submit">搜索</Button>
+        <div className="flex justify-center">
+          <Button type="submit" className="bg-white text-purple-600 hover:bg-purple-100 transition-colors duration-300">
+            搜索
+          </Button>
+        </div>
       </form>
 
-      {isLoading && <p>加载中...</p>}
+      {isLoading && <p className="text-white mt-4 text-center">加载中...</p>}
       
       {isSearchTriggered && !isLoading && !error && data && (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>课程名称</TableHead>
-              <TableHead>教师姓名</TableHead>
-              <TableHead>学院</TableHead>
-              <TableHead>学年学期</TableHead>
-              <TableHead>课程节次</TableHead>
-              <TableHead>链接</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((course, index) => (
-              <TableRow key={index}>
-                <TableCell>{course.course_name}</TableCell>
-                <TableCell>{course.tec_name}</TableCell>
-                <TableCell>{course.organ_name}</TableCell>
-                <TableCell>{course.year_term}</TableCell>
-                <TableCell>{course.leti_name}</TableCell>
-                <TableCell>
-                  {course.url1 !== 'N/A' && (
-                    <a href={course.url1} target="_blank" rel="noopener noreferrer" className="mr-2">
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  )}
-                  {course.url2 !== 'N/A' && (
-                    <a href={course.url2} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  )}
-                </TableCell>
+        <div className="mt-8 bg-white/10 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-white">课程名称</TableHead>
+                <TableHead className="text-white">教师姓名</TableHead>
+                <TableHead className="text-white">学院</TableHead>
+                <TableHead className="text-white">学年学期</TableHead>
+                <TableHead className="text-white">课程节次</TableHead>
+                <TableHead className="text-white">链接</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {data.map((course, index) => (
+                <TableRow key={index} className="hover:bg-white/20 transition-colors duration-200">
+                  <TableCell className="text-white">{course.course_name}</TableCell>
+                  <TableCell className="text-white">{course.tec_name}</TableCell>
+                  <TableCell className="text-white">{course.organ_name}</TableCell>
+                  <TableCell className="text-white">{course.year_term}</TableCell>
+                  <TableCell className="text-white">{course.leti_name}</TableCell>
+                  <TableCell className="text-white">
+                    {course.url1 !== 'N/A' && (
+                      <a href={course.url1} target="_blank" rel="noopener noreferrer" className="mr-2 text-white hover:text-purple-200">
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    )}
+                    {course.url2 !== 'N/A' && (
+                      <a href={course.url2} target="_blank" rel="noopener noreferrer" className="text-white hover:text-purple-200">
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   );
