@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { fetchCourseData } from '@/lib/api';
 
 const Index = () => {
   const [showSearch, setShowSearch] = useState(true);
@@ -30,14 +31,21 @@ const Index = () => {
     sessionStorage.setItem('searchParams', JSON.stringify(params));
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setShowSearch(false);
-      setShowResults(true);
+      const response = await fetchCourseData(params);
+      if (response && response.length > 0) {
+        setShowSearch(false);
+        setShowResults(true);
+      } else {
+        toast({
+          title: "提示",
+          description: "没有找到匹配的课程",
+          variant: "default",
+        });
+      }
     } catch (error) {
       toast({
         title: "错误",
-        description: "搜索过程中发生错误，请重试",
+        description: error.response?.data?.message || "搜索过程中发生错误，请重试",
         variant: "destructive",
       });
     } finally {
@@ -68,7 +76,7 @@ const Index = () => {
       )}
       
       {showResults && (
-        <Card className="w-full max-w-[90%] shadow-lg bg-gray-800/50 backdrop-blur-lg border border-gray-700">
+        <Card className="w-full max-w-[95%] shadow-lg bg-gray-800/50 backdrop-blur-lg border border-gray-700">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold mb-4 text-center text-white">搜索结果</h2>
             <CourseSearch showResults={true} initialParams={searchParams} />
