@@ -12,6 +12,6 @@ export const fetchCourseData = async ({ name, teacher, org, token }) => {
     });
     return response.data;
   } catch (error) {
-    throw new Error('Failed to fetch course data');
+    throw error;
   }
 };

@@ -5,15 +5,41 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExternalLink } from 'lucide-react';
 import { fetchCourseData } from '@/lib/api';
+import { useToast } from "@/components/ui/use-toast";
 
 const CourseSearch = () => {
   const [searchParams, setSearchParams] = useState({ name: '', teacher: '', org: '', token: '' });
   const [isSearchTriggered, setIsSearchTriggered] = useState(false);
+  const { toast } = useToast();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['courseData', searchParams],
     queryFn: () => fetchCourseData(searchParams),
-    enabled: isSearchTriggered,
+    enabled: false,
+    retry: false,
+    onError: (error) => {
+      if (error.response) {
+        if (error.response.status === 429) {
+          toast({
+            title: "错误",
+            description: "请求过多，请稍后再试",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "错误",
+            description: error.response.data.message || "发生未知错误",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "错误",
+          description: "无法连接到服务器",
+          variant: "destructive",
+        });
+      }
+    },
   });
 
   const handleInputChange = (e) => {
@@ -23,6 +49,7 @@ const CourseSearch = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSearchTriggered(true);
+    refetch();
   };
 
   return (
@@ -60,9 +87,8 @@ const CourseSearch = () => {
       </form>
 
       {isLoading && <p>加载中...</p>}
-      {error && <p>发生错误: {error.message}</p>}
       
-      {data && (
+      {isSearchTriggered && !isLoading && !error && data && (
         <Table>
           <TableHeader>
             <TableRow>
