@@ -51,6 +51,14 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => 
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!searchParams.token) {
+      toast({
+        title: "错误",
+        description: "Token 是必填项",
+        variant: "destructive",
+      });
+      return;
+    }
     if (onSubmit) {
       onSubmit(searchParams);
     } else {
@@ -88,10 +96,11 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => 
         <Input
           type="password"
           name="token"
-          placeholder="Token"
+          placeholder="Token (必填)"
           value={searchParams.token}
           onChange={handleInputChange}
           className="bg-gray-700/50 backdrop-blur-lg border-gray-600 text-white placeholder-gray-400"
+          required
         />
         <div className="flex justify-center">
           <Button type="submit" className="bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-300">
@@ -105,6 +114,12 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {} }) => 
   return (
     <div>
       {isLoading && <p className="text-gray-300 mt-4 text-center">加载中...</p>}
+      
+      {!isLoading && error && (
+        <p className="text-red-500 mt-4 text-center">
+          {error.response?.data?.message || "发生错误，请重试"}
+        </p>
+      )}
       
       {!isLoading && !error && data && (
         <div className="mt-4 bg-gray-800/50 backdrop-blur-lg rounded-lg p-4 overflow-x-auto">
