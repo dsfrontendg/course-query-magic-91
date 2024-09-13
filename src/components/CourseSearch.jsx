@@ -34,7 +34,10 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
         console.log('CourseSearch: Network error');
         errorMessage = "网络连接失败";
       }
-      message.error(errorMessage);
+      message.error({
+        content: errorMessage,
+        className: 'custom-message'
+      });
     },
   });
 
@@ -47,7 +50,10 @@ const CourseSearch = ({ onSubmit, showResults = false, initialParams = {}, isLoa
     console.log('CourseSearch: handleSubmit called');
     if (!searchParams.token) {
       console.log('CourseSearch: Token is missing');
-      message.error("错误: Token 是必填项");
+      message.error({
+        content: "错误: Token 是必填项",
+        className: 'custom-message'
+      });
       return;
     }
     if (onSubmit) {
